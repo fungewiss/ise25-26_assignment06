@@ -28,19 +28,19 @@ public class UserController {
     private final UserDtoMapper userDtoMapper;
 
     @GetMapping("")
-    public ResponseEntity<List<UserDto>> getAllUsers() {
+    public ResponseEntity<List<UserDto>> getAll() {
         return ResponseEntity.ok(
-            userService.getAllUsers().stream()
+            userService.getAll().stream()
                 .map(userDtoMapper::fromDomain)
                 .toList()
         );
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDto> getUserById(@PathVariable Long id) {
+    public ResponseEntity<UserDto> getById(@PathVariable Long id) {
         return ResponseEntity.ok(
             userDtoMapper.fromDomain(
-                userService.getUserById(id)
+                userService.getById(id)
             )
         );
     }
@@ -57,7 +57,7 @@ public class UserController {
 
     @PostMapping("")
     public ResponseEntity<UserDto> createUser(@RequestBody @Valid UserDto userDto) {
-        User createdUser = upsertUser(userDto);
+        User createdUser = upsert(userDto);
         return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(createdUser.id())
@@ -74,19 +74,19 @@ public class UserController {
                 throw new IllegalArgumentException("User ID in path and body do not match.");
             }
             return ResponseEntity.ok(
-                upsertUser(userDto)
+                upsert(userDto)
             );
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        userService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
-    private User upsertUser(UserDto userDto) {
+    private User upsert(UserDto userDto) {
         return userDtoMapper.fromDomain(
-            userService.upsertUser(
+            userService.upsert(
                 userDtoMapper.toDomain(userDto)
             )
         );
