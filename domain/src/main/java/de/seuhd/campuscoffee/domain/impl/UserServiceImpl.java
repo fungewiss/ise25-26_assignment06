@@ -1,13 +1,16 @@
 package de.seuhd.campuscoffee.domain.impl;
 
 import de.seuhd.campuscoffee.domain.model.User;
-import de.seuhd.campuscoffee.domain.repository.UserDataService;
+import de.seuhd.campuscoffee.domain.ports.UserDataService;
 import de.seuhd.campuscoffee.domain.ports.UserService;
-import de.seuhd.campuscoffee.domain.repository.exception.DuplicationException;
+import de.seuhd.campuscoffee.domain.exceptions.DuplicationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.jspecify.annotations.NonNull;
+
+import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service

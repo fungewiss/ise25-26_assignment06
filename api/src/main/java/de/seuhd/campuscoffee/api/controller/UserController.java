@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import jakarta.validation.Valid;
 
 import de.seuhd.campuscoffee.domain.ports.UserService;
@@ -13,7 +14,7 @@ import de.seuhd.campuscoffee.api.mapper.UserDtoMapper;
 import de.seuhd.campuscoffee.api.dtos.UserDto;
 import de.seuhd.campuscoffee.domain.model.User;
 
-ipmort java.util.List;
+import java.util.List;
 
 
 @Tag(name = "Users", description = "Operations related to user management.")
@@ -46,28 +47,27 @@ public class UserController {
     }
 
     @GetMapping("/filter")
-    public ResponseEntity<List<UserDto>> filter(
+    public ResponseEntity<UserDto> filter(
         @RequestParam("loginName") String loginName) {
         return ResponseEntity.ok(
             userDtoMapper.fromDomain(
-                userService.getUserByLoginName(loginName)
+                userService.getByLoginName(loginName)
             )
         );
     }
 
     @PostMapping("")
-    public ResponseEntity<UserDto> createUser(@RequestBody @Valid UserDto userDto) {
-        User createdUser = upsert(userDto);
+    public ResponseEntity<UserDto> create(@RequestBody @Valid UserDto userDto) {
+        UserDto created = upsert(userDto);
         return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(createdUser.id())
-                .toUri();
-                .body(createdUser);
-        );
+                .buildAndExpand(created.id())
+                .toUri())
+                .body(created);
     }    
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserDto> updateUser(
+    public ResponseEntity<UserDto> update(
         @PathVariable Long id,
         @RequestBody @Valid UserDto userDto) {
             if (!id.equals(userDto.id())) {
@@ -84,7 +84,7 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    private User upsert(UserDto userDto) {
+    private UserDto upsert(UserDto userDto) {
         return userDtoMapper.fromDomain(
             userService.upsert(
                 userDtoMapper.toDomain(userDto)
