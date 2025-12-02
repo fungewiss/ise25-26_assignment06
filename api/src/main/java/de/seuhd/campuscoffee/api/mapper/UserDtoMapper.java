@@ -5,8 +5,9 @@ import de.seuhd.campuscoffee.domain.model.User;
 import org.mapstruct.Mapper;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 
-@ConditionalOnMissingBean // prevent IntelliJ warning about duplicate beans
 @Mapper(componentModel = "spring")
+@ConditionalOnMissingBean // prevent IntelliJ warning about duplicate beans
+
 public interface UserDtoMapper {
     //TODO: Implement user DTO mapper
 
